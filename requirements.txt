@@ -42,3 +42,4 @@ uvicorn
 langserve
 sse_starlette
 tavily-python
+streamlit
