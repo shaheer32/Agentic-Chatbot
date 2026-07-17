@@ -1,7 +1,10 @@
+import os
 from configparser import ConfigParser
 
 class Config:
-    def __init__(self, config_file="D:/Langchain and Langgraph/Agentic Chatbot/src/LanggraphAgenticAI/UI/uiconfig.ini"):
+    def __init__(self, config_file=None):
+        if config_file is None:
+            config_file = os.path.join(os.path.dirname(__file__), "uiconfig.ini")
         self.config= ConfigParser()
         self.config.read(config_file)
 
