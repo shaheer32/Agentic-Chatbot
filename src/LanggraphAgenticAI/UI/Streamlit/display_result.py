@@ -1,5 +1,6 @@
 import streamlit as st
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+
 
 class DisplayResultStreamlit:
     def __init__(self, usecase, graph, user_message):
@@ -14,18 +15,33 @@ class DisplayResultStreamlit:
 
             for event in self.graph.stream({'messages': ("user", self.user_message)}):
                 for value in event.values():
-                    messages = value.get("messages")  # ✅ safely get messages
+                    messages = value.get("messages")
 
-                    # Handle both list and single AIMessage
                     if isinstance(messages, list):
-                        ai_message = messages[-1]      # ✅ last message if list
+                        ai_message = messages[-1]
                     else:
-                        ai_message = messages          # ✅ direct AIMessage object
+                        ai_message = messages
 
-                    # Extract content safely
                     if isinstance(ai_message, AIMessage):
                         with st.chat_message("assistant"):
                             st.write(ai_message.content)
                     elif isinstance(ai_message, str):
                         with st.chat_message("assistant"):
                             st.write(ai_message)
+
+        elif self.usecase == "Chatbot With Web Search":
+            initial_state = {"messages": [self.user_message]}
+            res = self.graph.invoke(initial_state)
+
+            for message in res["messages"]:
+                if isinstance(message, HumanMessage):
+                    with st.chat_message("user"):
+                        st.write(message.content)
+                elif isinstance(message, ToolMessage):
+                    with st.chat_message("ai"):
+                        st.write("Tool Call Start")
+                        st.write(message.content)
+                        st.write("Tool Call End")
+                elif isinstance(message, AIMessage) and message.content:
+                    with st.chat_message("assistant"):
+                        st.write(message.content)
