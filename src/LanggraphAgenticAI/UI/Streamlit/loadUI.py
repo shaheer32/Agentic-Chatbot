@@ -22,10 +22,19 @@ class LoadStremlitUI:
                 self.user_controls["selected_groq_model"] = st.selectbox("Select Model",model_options)
                 self.user_controls["GROQ_API_KEY"] = st.session_state["GROQ_API_KEY"]=st.text_input("API Key",type="password")
                 if not self.user_controls["GROQ_API_KEY"]:
-                    st.warning("Please Enter your GROQ API Key to proceed.")
+                    st.warning("Please Enter your GROQ API Key to proceed. Don't have? refer: https://console.groq.com/home")
 
             #USECase selection
 
             self.user_controls["selected_usecase"]=st.selectbox("Select Usecases",usecase_options)
+
+            if self.user_controls["selected_usecase"] == "Chatbot With Web Search":
+                os.environ["TAVILY_API_KEY"]=self.user_controls["TAVILY_API_KEY"] = st.session_state["TAVILY_API_KEY"]=st.text_input("TAVILY_API Key",type="password")
+
+                if not self.user_controls["TAVILY_API_KEY"]:
+                    st.warning("Please enter your TAVILY_API_KEY to proceed. Don't have? refer: https://app.tavily.com/home")
+
+
+
             return self.user_controls
 
