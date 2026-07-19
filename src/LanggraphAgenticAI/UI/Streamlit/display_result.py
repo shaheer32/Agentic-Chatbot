@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
 
@@ -45,23 +45,31 @@ class DisplayResultStreamlit:
                 elif isinstance(message, AIMessage) and message.content:
                     with st.chat_message("assistant"):
                         st.write(message.content)
-<<<<<<< HEAD
-=======
 
         elif self.usecase == "AI News":
             frequency = self.user_message
-            topic = st.session_state.get("topic", "Artificial Intelligence (AI) technology news")
+            topic = st.session_state.get("topic", "")
 
-            with st.spinner("Fetching and summarizing news... 🕐"):
-                result = self.graph.invoke({"messages": frequency, "topic": topic})
-                try:
-                    AI_NEWS_PATH = f"./AINews/{frequency.lower()}_summary.md"
-                    with open(AI_NEWS_PATH, "r") as file:
-                        markdown_content = file.read()
+            with st.spinner("Fetching and summarizing news..."):
+                initial_state = {"messages": [frequency], "topic": topic}
+                res = self.graph.invoke(initial_state)
 
-                    st.markdown(markdown_content, unsafe_allow_html=True)
-                except FileNotFoundError:
-                    st.error(f"News Not Generated or File not found: {AI_NEWS_PATH}")
-                except Exception as e:
-                    st.error(f"An error occurred: {str(e)}")
->>>>>>> de926a0 (Add AI News Summarizer usecase with Tavily search integration)
+            summary = res.get("summary")
+            filename = res.get("filename")
+
+            if summary:
+                st.markdown(summary)
+
+                if filename:
+                    try:
+                        with open(filename, "rb") as f:
+                            st.download_button(
+                                label="Download Summary",
+                                data=f,
+                                file_name=filename.split("/")[-1],
+                                mime="text/markdown"
+                            )
+                    except FileNotFoundError:
+                        pass
+            else:
+                st.warning("No summary was generated. Please try again.")
