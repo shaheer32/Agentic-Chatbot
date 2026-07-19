@@ -1,4 +1,4 @@
-import streamlit as st
+﻿import streamlit as st
 import os
 
 from src.LanggraphAgenticAI.UI.uniconfig import Config
@@ -34,26 +34,10 @@ class LoadStremlitUI:
                 if not self.user_controls["GROQ_API_KEY"]:
                     st.warning("Please Enter your GROQ API Key to proceed. Don't have? refer: https://console.groq.com/home")
 
-            # Usecase selection
             self.user_controls["selected_usecase"] = st.selectbox("Select Usecases", usecase_options)
 
-<<<<<<< HEAD
-            self.user_controls["selected_usecase"]=st.selectbox("Select Usecases",usecase_options)
-
-            if self.user_controls["selected_usecase"] == "Chatbot With Web Search":
-                os.environ["TAVILY_API_KEY"]=self.user_controls["TAVILY_API_KEY"] = st.session_state["TAVILY_API_KEY"]=st.text_input("TAVILY_API Key",type="password")
-
-                if not self.user_controls["TAVILY_API_KEY"]:
-                    st.warning("Please enter your TAVILY_API_KEY to proceed. Don't have? refer: https://app.tavily.com/home")
-
-
-
-            return self.user_controls
-=======
-            # Reset the fetch flag whenever we're not on AI News — this restores the chat box
             if self.user_controls["selected_usecase"] != "AI News":
                 st.session_state.IsFetchButtonClicked = False
->>>>>>> de926a0 (Add AI News Summarizer usecase with Tavily search integration)
 
             if self.user_controls["selected_usecase"] in ("Chatbot With Web Search", "AI News"):
                 os.environ["TAVILY_API_KEY"] = self.user_controls["TAVILY_API_KEY"] = st.session_state["TAVILY_API_KEY"] = st.text_input(
